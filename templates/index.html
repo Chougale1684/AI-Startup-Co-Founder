@@ -1,62 +1,735 @@
-{% extends "base.html" %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Startup Co-Founder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --surface2: #1a1a26;
+      --border: #2a2a3d;
+      --accent: #6c63ff;
+      --accent2: #ff6584;
+      --accent3: #43e97b;
+      --text: #e8e8f0;
+      --muted: #7070a0;
+      --radius: 16px;
+    }
 
-<nav class="top-nav">
-  <div class="nav-left">
-    <h1 class="app-logo">CoFoundr</h1>
-  </div>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      background-image: radial-gradient(ellipse at 20% 0%, rgba(108,99,255,0.12) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 100%, rgba(255,101,132,0.08) 0%, transparent 60%);
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 40px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10,10,15,0.8);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.3rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .nav-user {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .nav-user span { color: var(--text); font-weight: 500; }
+
+    .btn-logout {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .btn-logout:hover { border-color: var(--accent2); color: var(--accent2); }
+
+    /* LAYOUT */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* INPUT CARD */
+    .input-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin-bottom: 32px;
+    }
+
+    .input-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      line-height: 1.6;
+      resize: vertical;
+      min-height: 100px;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    textarea:focus { border-color: var(--accent); }
+    textarea::placeholder { color: var(--muted); }
+
+    /* BUTTONS */
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      flex: 1;
+      min-width: 150px;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.25s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      letter-spacing: 0.02em;
+    }
+
+    .btn-validate {
+      background: linear-gradient(135deg, var(--accent), #9b8fff);
+      color: white;
+    }
+    .btn-validate:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(108,99,255,0.35); }
+
+    .btn-market {
+      background: linear-gradient(135deg, #f7971e, #ffd200);
+      color: #1a1000;
+    }
+    .btn-market:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(247,151,30,0.35); }
+
+    .btn-pitch {
+      background: linear-gradient(135deg, var(--accent3), #38f9d7);
+      color: #001a0d;
+    }
+    .btn-pitch:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(67,233,123,0.3); }
+
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+    /* RESULT */
+    #result-section { display: none; margin-bottom: 32px; }
+
+    .result-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      animation: fadeUp 0.4s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .result-badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .badge-validate { background: rgba(108,99,255,0.15); color: var(--accent); border: 1px solid rgba(108,99,255,0.3); }
+    .badge-market   { background: rgba(247,151,30,0.15);  color: #f7971e;       border: 1px solid rgba(247,151,30,0.3); }
+    .badge-pitch    { background: rgba(67,233,123,0.15);  color: var(--accent3); border: 1px solid rgba(67,233,123,0.3); }
+
+    .result-idea-tag {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .result-body { line-height: 1.8; }
+
+    .result-body .section-heading {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-top: 24px;
+      margin-bottom: 8px;
+      padding-left: 12px;
+      border-left: 3px solid var(--accent);
+    }
+
+    .result-body .section-content {
+      color: #c8c8e0;
+      font-size: 0.97rem;
+      line-height: 1.75;
+      padding-left: 4px;
+    }
+
+    /* LOADING */
+    .loading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      padding: 24px 0;
+    }
+
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ERROR */
+    .error-msg {
+      background: rgba(255,101,132,0.1);
+      border: 1px solid rgba(255,101,132,0.3);
+      border-radius: 12px;
+      padding: 16px 20px;
+      color: var(--accent2);
+      font-size: 0.9rem;
+    }
+
+    /* HISTORY */
+    .history-section {
+      margin-top: 48px;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .history-empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 40px;
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .history-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      transition: border-color 0.2s;
+      cursor: pointer;
+    }
+
+    .history-item:hover { border-color: var(--accent); }
+
+    .history-item-left { flex: 1; min-width: 0; }
+
+    .history-idea {
+      font-weight: 500;
+      font-size: 0.97rem;
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .history-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .history-item-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .btn-delete {
+      background: transparent;
+      border: 1px solid rgba(255,101,132,0.3);
+      color: var(--accent2);
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .btn-delete:hover { background: rgba(255,101,132,0.1); }
+
+    .btn-view {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s;
+    }
+    .btn-view:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(6px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 680px;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 32px;
+      animation: fadeUp 0.3s ease;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.4rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .modal-close:hover { color: var(--text); }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    @media (max-width: 600px) {
+      nav { padding: 16px 20px; }
+      .container { padding: 32px 16px; }
+      .actions { flex-direction: column; }
+      .btn { min-width: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">⚡ CoFoundr</div>
   <div class="nav-right">
-    <div class="profile-container">
-      <!-- Circular Avatar -->
-      <div class="profile-avatar" onclick="toggleDropdown()" title="Account">
-        <span id="avatar-initials">{{ current_user.username[:2].upper() }}</span>
-      </div>
-
-      <!-- Dropdown Menu -->
-      <div id="profile-dropdown" class="dropdown-menu">
-        <a href="#" class="dropdown-item">
-          👤 Edit Profile
-        </a>
-        <a href="#" class="dropdown-item">
-          ⚙️ Settings
-        </a>
-        <a href="{{ url_for('logout') }}" class="dropdown-item logout">
-          🚪 Logout
-        </a>
-      </div>
-    </div>
+    <span class="nav-user">Hey, <span>{{ username }}</span> 👋</span>
+    <a href="/logout" class="btn-logout">Logout</a>
   </div>
 </nav>
-<div class="main-content">
+
+<div class="container">
+
+  <!-- HERO -->
   <div class="hero">
-    <h1>CoFoundr</h1>
-    <p class="tagline">Your AI Startup Partner</p>
+    <h1>Your AI <span>Co-Founder</span><br>is Ready to Help</h1>
+    <p>Validate ideas, research markets, and generate investor pitches — all powered by AI.</p>
   </div>
 
-  <div class="idea-card">
-    <h3>Your Startup Idea</h3>
-    <textarea id="idea" rows="7" placeholder="Describe your startup idea in detail..."></textarea>
-    <div class="tip">💡 The more detailed your idea, the better the AI feedback</div>
-  </div>
-
-  <div class="action-buttons">
-    <button onclick="validateIdea()" class="btn validate-btn">✅ Validate Idea</button>
-    <button onclick="marketResearch()" class="btn research-btn">🔍 Market Research</button>
-    <button onclick="generatePitch()" class="btn pitch-btn">🎤 Generate Pitch</button>
-  </div>
-
-  <div id="loading" class="loading hidden">
-    <span class="spinner"></span> Analyzing with AI...
-  </div>
-
-  <div id="results" class="results hidden">
-    <div class="result-card">
-      <h2 id="result-title"></h2>
-      <div id="result-content" class="content"></div>
+  <!-- INPUT CARD -->
+  <div class="input-card">
+    <label class="input-label" for="ideaInput">Your Startup Idea</label>
+    <textarea id="ideaInput" placeholder="Describe your startup idea... e.g. An app that connects local farmers directly with urban consumers for fresh produce delivery."></textarea>
+    <div class="actions">
+      <button class="btn btn-validate" onclick="runModule('validate')">
+        🔍 Validate Idea
+      </button>
+      <button class="btn btn-market" onclick="runModule('market')">
+        📊 Market Research
+      </button>
+      <button class="btn btn-pitch" onclick="runModule('pitch')">
+        🚀 Generate Pitch
+      </button>
     </div>
+  </div>
+
+  <!-- RESULT SECTION -->
+  <div id="result-section">
+    <div class="result-card" id="result-card">
+      <div id="result-content"></div>
+    </div>
+  </div>
+
+  <!-- HISTORY SECTION -->
+  <div class="history-section">
+    <div class="section-title">📁 Idea History</div>
+    <div id="history-list">
+      <div class="history-empty">No history yet. Start by entering an idea above!</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div id="modal-badge"></div>
+      </div>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div id="modal-idea-tag" style="color:var(--muted); font-size:0.85rem; margin-bottom:16px; font-style:italic;"></div>
+    <div id="modal-body" class="result-body"></div>
   </div>
 </div>
 
-<script src="{{ url_for('static', filename='script.js') }}"></script>
-{% endblock %}
+<script>
+  const MODULE_CONFIG = {
+    validate: { label: 'Idea Validation', badgeClass: 'badge-validate', endpoint: '/validate-idea' },
+    market:   { label: 'Market Research', badgeClass: 'badge-market',   endpoint: '/market-research' },
+    pitch:    { label: 'Pitch Generator', badgeClass: 'badge-pitch',    endpoint: '/generate-pitch' }
+  };
+
+  function formatResult(text) {
+  const lines = text.split('\n');
+  let html = '';
+
+  lines.forEach(line => {
+    const trimmed = line.trim();
+    if (!trimmed) { html += '<div style="height:8px"></div>'; return; }
+
+    // ## Heading (from markdown)
+    if (/^##\s/.test(trimmed)) {
+      const heading = trimmed.replace(/^##\s*/, '').replace(/:$/, '');
+      html += `<div class="section-heading">${heading}</div>`;
+
+    // ALL CAPS heading (e.g. PROBLEM IT SOLVES:)
+    } else if (/^[A-Z][A-Z\s\-]{3,}:/.test(trimmed)) {
+      const heading = trimmed.replace(/:$/, '');
+      html += `<div class="section-heading">${heading}</div>`;
+
+    // Numbered list item (1. 2. 3.)
+    } else if (/^\d+\.\s/.test(trimmed)) {
+      let content = trimmed.replace(/^\d+\.\s/, '');
+      content = boldKeywords(content);
+      const num = trimmed.match(/^(\d+)/)[1];
+      html += `
+        <div class="list-item">
+          <span class="list-num">${num}</span>
+          <span>${content}</span>
+        </div>`;
+
+    // Bullet point (- or *)
+    } else if (/^[-*]\s/.test(trimmed)) {
+      let content = trimmed.replace(/^[-*]\s/, '');
+      content = boldKeywords(content);
+      html += `
+        <div class="bullet-item">
+          <span class="bullet-dot">▸</span>
+          <span>${content}</span>
+        </div>`;
+
+    // Bold line (**text**)
+    } else if (/^\*\*.*\*\*$/.test(trimmed)) {
+      const content = trimmed.replace(/\*\*/g, '');
+      html += `<div class="bold-line">${content}</div>`;
+
+    // Regular paragraph
+    } else {
+      html += `<div class="section-content">${boldKeywords(trimmed)}</div>`;
+    }
+  });
+
+  return html;
+}
+
+function boldKeywords(text) {
+  // Render **bold** markdown
+  text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+  // Auto-bold important startup keywords
+  const keywords = [
+    'High', 'Medium', 'Low', 'Revenue', 'Profit', 'Market', 'Risk',
+    'Opportunity', 'Growth', 'Target', 'Competitor', 'Advantage',
+    'Solution', 'Problem', 'Strategy', 'Investment', 'Customer',
+    'Scalable', 'Sustainable', 'Innovation', 'Disruption', 'Funding'
+  ];
+  keywords.forEach(word => {
+    const regex = new RegExp(`\\b(${word})\\b`, 'gi');
+    text = text.replace(regex, '<strong class="keyword">$1</strong>');
+  });
+
+  return text;
+}
+
+  function getBadgeHTML(module) {
+    const cfg = MODULE_CONFIG[module];
+    return `<span class="result-badge ${cfg.badgeClass}">${cfg.label}</span>`;
+  }
+
+  async function runModule(module) {
+    const idea = document.getElementById('ideaInput').value.trim();
+    if (!idea) {
+      alert('Please enter your startup idea first!');
+      return;
+    }
+
+    const cfg = MODULE_CONFIG[module];
+    const resultSection = document.getElementById('result-section');
+    const resultContent = document.getElementById('result-content');
+
+    resultSection.style.display = 'block';
+    resultContent.innerHTML = `
+      <div class="loading">
+        <div class="spinner"></div>
+        <span>Analyzing your idea with AI...</span>
+      </div>
+    `;
+    resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Disable buttons
+    document.querySelectorAll('.btn').forEach(b => b.disabled = true);
+
+    try {
+      const res = await fetch(cfg.endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idea })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || data.error) {
+        resultContent.innerHTML = `<div class="error-msg">⚠️ ${data.error || 'Something went wrong. Please try again.'}</div>`;
+        return;
+      }
+
+      resultContent.innerHTML = `
+        <div class="result-header">
+          ${getBadgeHTML(module)}
+          <span class="result-idea-tag">"${idea.length > 80 ? idea.slice(0, 80) + '...' : idea}"</span>
+        </div>
+        <div class="result-body">${formatResult(data.result)}</div>
+      `;
+
+      loadHistory();
+
+    } catch (err) {
+      resultContent.innerHTML = `<div class="error-msg">⚠️ Network error. Please check your connection.</div>`;
+    } finally {
+      document.querySelectorAll('.btn').forEach(b => b.disabled = false);
+    }
+  }
+
+  async function loadHistory() {
+    try {
+      const res = await fetch('/history');
+      const entries = await res.json();
+      const container = document.getElementById('history-list');
+
+      if (!entries.length) {
+        container.innerHTML = `<div class="history-empty">No history yet. Start by entering an idea above!</div>`;
+        return;
+      }
+
+      container.innerHTML = entries.map(e => `
+        <div class="history-item" id="hist-${e.id}">
+          <div class="history-item-left">
+            <div class="history-idea">${e.idea}</div>
+            <div class="history-meta">
+              ${getBadgeHTML(e.module)}
+              <span>${e.created_at}</span>
+            </div>
+          </div>
+          <div class="history-item-right">
+            <button class="btn-view" onclick="viewHistory(${JSON.stringify(e).replace(/"/g, '&quot;')})">View</button>
+            <button class="btn-delete" onclick="deleteHistory(${e.id})" title="Delete">✕</button>
+          </div>
+        </div>
+      `).join('');
+
+    } catch (err) {
+      console.error('Failed to load history', err);
+    }
+  }
+
+  function viewHistory(entry) {
+    document.getElementById('modal-badge').innerHTML = getBadgeHTML(entry.module);
+    document.getElementById('modal-idea-tag').textContent = `"${entry.idea}"`;
+    document.getElementById('modal-body').innerHTML = formatResult(entry.result);
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+
+  function closeModal(event) {
+    if (event.target === document.getElementById('modal-overlay')) {
+      document.getElementById('modal-overlay').classList.remove('open');
+    }
+  }
+
+  function closeModalDirect() {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+
+  async function deleteHistory(id) {
+    if (!confirm('Delete this history entry?')) return;
+    try {
+      await fetch(`/history/delete/${id}`, { method: 'DELETE' });
+      document.getElementById(`hist-${id}`)?.remove();
+      const remaining = document.querySelectorAll('.history-item');
+      if (!remaining.length) {
+        document.getElementById('history-list').innerHTML =
+          `<div class="history-empty">No history yet. Start by entering an idea above!</div>`;
+      }
+    } catch (err) {
+      alert('Failed to delete. Try again.');
+    }
+  }
+
+  // Load history on page load
+  loadHistory();
+</script>
+
+</body>
+</html>
