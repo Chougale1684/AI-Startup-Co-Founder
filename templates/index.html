@@ -1,58 +1,53 @@
 {% extends "base.html" %}
 {% block content %}
 
-<!-- Top Navigation -->
 <nav class="top-nav">
   <div class="nav-left">
     <h1 class="app-logo">CoFoundr</h1>
   </div>
-  
+
   <div class="nav-right">
     <div class="profile-container">
-      <div class="profile-avatar" onclick="toggleDropdown()">
+      <!-- Circular Avatar -->
+      <div class="profile-avatar" onclick="toggleDropdown()" title="Account">
         <span id="avatar-initials">{{ current_user.username[:2].upper() }}</span>
       </div>
-      
-      <div id="profile-dropdown" class="dropdown-menu hidden">
-        <a href="#" class="dropdown-item">👤 Edit Profile</a>
-        <a href="#" class="dropdown-item">⚙️ Settings</a>
-        <hr>
-        <a href="{{ url_for('logout') }}" class="dropdown-item logout">🚪 Logout</a>
+
+      <!-- Dropdown Menu -->
+      <div id="profile-dropdown" class="dropdown-menu">
+        <a href="#" class="dropdown-item">
+          👤 Edit Profile
+        </a>
+        <a href="#" class="dropdown-item">
+          ⚙️ Settings
+        </a>
+        <a href="{{ url_for('logout') }}" class="dropdown-item logout">
+          🚪 Logout
+        </a>
       </div>
     </div>
   </div>
 </nav>
-
 <div class="main-content">
-  <div class="hero-section">
-    <h2 class="tagline">Validate ideas • Research market • Generate pitches</h2>
+  <div class="hero">
+    <h1>CoFoundr</h1>
+    <p class="tagline">Your AI Startup Partner</p>
   </div>
 
   <div class="idea-card">
     <h3>Your Startup Idea</h3>
-    
-    <textarea id="idea" rows="7" 
-      placeholder="Example: An AI-powered app that helps college students find affordable healthy meals near campus..."></textarea>
-
-    <div class="tip">
-      💡 Tip: Be specific for better AI results
-    </div>
+    <textarea id="idea" rows="7" placeholder="Describe your startup idea in detail..."></textarea>
+    <div class="tip">💡 The more detailed your idea, the better the AI feedback</div>
   </div>
 
   <div class="action-buttons">
-    <button onclick="validateIdea()" class="btn validate-btn">
-      ✅ Validate Idea
-    </button>
-    <button onclick="marketResearch()" class="btn research-btn">
-      🔍 Market Research
-    </button>
-    <button onclick="generatePitch()" class="btn pitch-btn">
-      🎤 Generate Pitch
-    </button>
+    <button onclick="validateIdea()" class="btn validate-btn">✅ Validate Idea</button>
+    <button onclick="marketResearch()" class="btn research-btn">🔍 Market Research</button>
+    <button onclick="generatePitch()" class="btn pitch-btn">🎤 Generate Pitch</button>
   </div>
 
   <div id="loading" class="loading hidden">
-    <span class="spinner"></span> Thinking with AI...
+    <span class="spinner"></span> Analyzing with AI...
   </div>
 
   <div id="results" class="results hidden">

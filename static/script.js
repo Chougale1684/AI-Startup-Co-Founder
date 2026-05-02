@@ -68,16 +68,16 @@ function generatePitch() {
     callAPI('/generate-pitch', ideaInput);
 }
 
-// Toggle Profile Dropdown
+// Toggle Dropdown
 function toggleDropdown() {
   const dropdown = document.getElementById('profile-dropdown');
   dropdown.classList.toggle('show');
 }
 
-// Close dropdown when clicking outside
+// Close dropdown when clicking anywhere else
 document.addEventListener('click', function(e) {
-  const dropdown = document.getElementById('profile-dropdown');
   const avatar = document.querySelector('.profile-avatar');
+  const dropdown = document.getElementById('profile-dropdown');
   
   if (!avatar.contains(e.target)) {
     dropdown.classList.remove('show');
