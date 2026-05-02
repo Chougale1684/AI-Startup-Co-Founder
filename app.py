@@ -376,7 +376,8 @@ def chat():
         return jsonify({"error": f"AI Error: {str(e)}"}), 500
 
 if __name__ == '__main__':
-    if not os.getenv('GROQ_API_KEY'):
-        print("⚠️  WARNING: GROQ_API_KEY not found in .env file!")
-        print("   Get your free API key at: https://console.groq.com/")
     app.run(debug=True)
+else:
+    # For production (Render / Gunicorn)
+    if not os.getenv('GROQ_API_KEY'):
+        print("⚠️ WARNING: GROQ_API_KEY is missing!")
