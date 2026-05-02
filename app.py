@@ -337,6 +337,43 @@ def generate_pitch():
     save_to_history(idea, "pitch", result)
     return jsonify({"result": result})
 
+# ====================== CHATBOT ROUTE ======================
+# Add this to your existing app.py
+
+@app.route('/chat', methods=['POST'])
+@login_required
+def chat():
+    data = request.get_json()
+    messages = data.get('messages', [])
+
+    if not messages:
+        return jsonify({"error": "No messages provided."}), 400
+
+    try:
+        response = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "You are a highly intelligent and friendly AI assistant. "
+                        "You can answer any question on any topic — technology, science, history, math, "
+                        "coding, business, startups, health, culture, and more. "
+                        "You give clear, helpful, and accurate responses. "
+                        "When relevant, you can also give startup and business advice. "
+                        "Be conversational, concise, and engaging."
+                    )
+                },
+                *messages  # Full conversation history for memory
+            ],
+            max_tokens=1024,
+            temperature=0.7
+        )
+        reply = response.choices[0].message.content.strip()
+        return jsonify({"reply": reply})
+
+    except Exception as e:
+        return jsonify({"error": f"AI Error: {str(e)}"}), 500
 
 if __name__ == '__main__':
     if not os.getenv('GROQ_API_KEY'):
